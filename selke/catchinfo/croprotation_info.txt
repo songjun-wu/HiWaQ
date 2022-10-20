@@ -1,0 +1,7 @@
+number_of_rotation_type	5			
+rotation_id	briefName ncrops	crop1	crop2	...
+1 forest 1 8							 
+2 pavedarea 1 8
+3 pastures 1 7
+4 arable_low 3 4 2 3
+5 arable_up 2 1 5

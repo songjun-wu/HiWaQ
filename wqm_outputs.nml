@@ -1,0 +1,78 @@
+! Emacs: -*- mode: f90 -*-
+!1)  First give the timestep for writing gridded model outputs
+!    It should be integer and has to be perfectly divisible 
+!    by the number of total modeling time steps
+!2) Define main outputs of the model as namelist
+!   the particular output flag is specified as .TRUE. / .FALSE
+!   for writing /not writing the output to a file
+! SYNTAX = ".TRUE." or ".FALSE."
+&statevarsoutput
+!
+! switch to control write out frequency of the gridded model outputs below
+! >0: after each <timeStep_model_outputs> time steps
+!  0: only at end of run
+! -1: daily
+! -2: monthly
+! -3: yearly
+timeStep_model_outputs_wqm = -3
+! total number of output states listed below
+nOUTstate_wqm = 19
+
+!--------------------------------------------------------------------------
+!soil terrestrial
+!Soil moisture concentration in each layer     [mg/l]
+output_FlxState_wqm(1) = .FALSE.
+!Surface runoff concentration (L1_cdirectRunoff)     [mg/l]
+output_FlxState_wqm(2) = .FALSE.
+!Surface runoff concentration (L1_csurfaceRunoff)     [mg/l]
+output_FlxState_wqm(3) = .FALSE.
+!Subsurface runoff concentration for each component defined (L1_csubsurfaceRunoff)[mg/l] 
+output_FlxState_wqm(4)= .FALSE.
+!Baseflow concentration (L1_cbaseflow)     [mg/l]
+output_FlxState_wqm(5) = .FALSE.
+!Soil IN stock in each layer (L1_dissolvedIN) [g/m^2]
+output_FlxState_wqm(6) = .FALSE.
+
+!above write-out the mean value
+!below write-out the accumulative value
+!Mass balance items
+!
+!Total uptake amount in terrestrial phase (L1_soilUptakeN) [g/m^2/setted timestep]
+output_FlxState_wqm(7) = .FALSE.
+!
+!Total denitrification amount (L1_soilDenitri) [g/m^2/setted timestep]
+output_FlxState_wqm(8) = .FALSE.
+!
+!Total mineralisation amount (L1_soilMineralN) [g/m^2/setted timestep]
+output_FlxState_wqm(9) = .FALSE.
+!
+!Total frtman applied IN amount (L1_soilINfrtmanapp) [g/m^2/setted timestep]
+output_FlxState_wqm(10) = .FALSE.
+
+!-----------------------------------------------------
+!Seepage to channel
+!concentration in diret flow to channel  (L1_concdirTOchan)     [mg/l]
+output_FlxState_wqm(11) = .FALSE.
+!concentration in Surface flow to channel  (L1_concsrfTOchan)     [mg/l]
+output_FlxState_wqm(12) = .FALSE.
+!concentration in Subsurface flow to channel for each component defined  (L1_concsubsrfTOchan)[mg/l]
+output_FlxState_wqm(13) = .FALSE.
+!concentration in baseflow to channel   (L1_concbasefTOchan)[mg/l]
+output_FlxState_wqm(14) = .FALSE.
+!concentration in total flow to channel  (L1_concOUT)[mg/l]
+output_FlxState_wqm(15) = .FALSE.
+!concentration of each stream reach (L1_concTIN) [mg/l]
+output_FlxState_wqm(16) = .FALSE.
+!above write-out the mean value
+!below write-out the accumulative value
+!Mass balance items
+!Total terrestrial export (L1_terXpt) [g/m^2/setted timestep]
+output_FlxState_wqm(17) = .FALSE.
+!
+!Instream denitrification amount (L1_aquaticDenitri) [kg/setted timestep]
+output_FlxState_wqm(18) = .FALSE.
+!
+!Instream assimilatory uptake amount (L1_aquaticAssimil) [kg/setted timestep]
+output_FlxState_wqm(19) = .FALSE.
+/
+

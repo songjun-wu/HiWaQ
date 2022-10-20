@@ -1,0 +1,497 @@
+! Emacs: -*- mode: f90 -*-
+!> \file wqm_config.nml
+
+!******************************************************************************************
+! MAIN
+!******************************************************************************************
+!> Main namelist
+!> Most of the variables (if not all) given in this namelist are common
+!> to all basins to be modeled.
+&mainconfig
+!-----------------------------------------------------------------------------
+!> general information of the coupled hydrological model name
+hydroModel = "mHM"
+hydromodel_info = "Samaniego et al,. 2010 DOI:"
+!-----------------------------------------------------------------------------
+!> model run timestep [h]
+timeStep = 24
+!-----------------------------------------------------------------------------
+!> Spatial resolution in m 
+resolution = 1000
+rout_resolution = 2000
+!>----------------------------------------------------------------------------
+!> catchment delineation ["1" for grid based and "2" for semi-distributed]
+model_type = 1
+/
+!-----------------------------------------------------------------------------
+&time_periods
+!-----------------------------------
+!total simulation peroid including the warming period
+!-----------------------------------
+!> simulation starting year 
+sim_Per%yStart = 2010
+!> starting month
+sim_Per%mStart = 01
+!> starting day
+sim_Per%dStart = 01
+!> ending year
+sim_Per%yEnd   = 2019
+!> ending month
+sim_Per%mEnd   = 12
+!> ending day
+sim_Per%dEnd   = 31
+!-----------------------------------
+!evaluation period (gauged data should cover)
+!-----------------------------------
+!> evaluation starting year 
+eval_Per%yStart = 2012
+!> starting month
+eval_Per%mStart = 01
+!> starting day
+eval_Per%dStart = 01
+!> ending year
+eval_Per%yEnd   = 2012
+!> ending month
+eval_Per%mEnd   = 12
+!> ending day
+eval_Per%dEnd   = 31
+/
+!******************************************************************************************
+! DIRECTORIES
+!******************************************************************************************
+&directories
+!> directory where common input files should be located for all modeled basins
+dir_catchinfo = "./selke/catchinfo/"
+!
+!> directory where water quality data should be located
+dir_gauges       = "./selke/gauges/"
+!
+!> directory where hydrological modelled data should be located
+dir_hydroInput       = "./selke/hydro/"
+!
+!> directory where output should be written
+dir_Out           = "./selke/output/"
+/
+!******************************************************************************************
+! Catchment Information for water quality parameterization 
+!******************************************************************************************
+&catchinfo 
+!---------------------------------------------------------------------
+!> Basic delineation of the catchment domain and actual area for each unit (grid or subcatchment)
+!> providing the ascii header and actual area for each grid 
+!> or geophysical information for each subcatchment (see e.g., GeoData.txt)
+fn_catchDomain = "catchdomain.asc"
+!---------------------------------------------------------------------
+!> Flow directions
+!> or text file defining spatial organization of grids/subcatchments (see examples in demos)
+!> fdir_type = 1 (ArcGIS style) or 2 (PCRaster style)
+! --   32 |  64  | 128  --  or  --  7  |  8   |  9  --
+! --------|------|----------------- ---|------|-----
+! --   16 | fdir | 1    ----------  4  | fdir |  6  --
+! --------|------|------------------ --|------|-----
+! --   8  |  4   | 2    ----------  1  |  2   |  3  --
+fdir_type = 1
+fn_flowDir = "flow_direction.asc"
+!> if model_type == 2 then: the spatial organization input file also contains channel ...
+!> ...morphological information for each link (length and width)
+fn_spatialorganization = "none"
+!---------------------------------------------------------------------
+!> Basic channel mask and morphological information (see examples in demos)
+!> for model_type == 2, all stream morphological information should be provided in "fn_spatialorganization"
+fn_channel_mask = "channelmask.asc"
+!> channel length for each reach [the same unit as model resolution, e.g., m]
+fn_channel_length = "channellength.asc"
+!> channel width for each reach
+fn_channel_width = "channelwidth.asc"
+!---------------------------------------------------------------------
+!> ALL crop management information
+fn_cropinfo = "cropdata.txt"
+!> Crop rotation look-up-table
+fn_lut_rotation = "croprotation_info.txt"
+fn_lut_monLAI = "lai_initial.txt"
+!> Initial organic N status should be roughly given
+fn_initial_condition = "initial_value.txt"
+!> Initial soil water N concentration in map format [mg/l]
+!> for model_type ==2, they should be provided in "fn_catchDomain" input for each subcatchment
+fn_init_concIN = "init_concIN.asc"
+fn_init_concON = "init_concON.asc"
+!> optional --generic daily global radiation data for in-stream autotrophic uptake
+fn_globalRadiation = "global_radiation.txt"
+!> Atmospheric wet N deposition input 
+!> constant values in precipitation & snowmelt (mg/l) (dimension the same as number of substances: IN and ON) 
+const_crain = 2.0, 0.0
+const_csnowmelt = 2.0,0.0 
+!---------------------------------------------------------------------
+!> Total number of land use
+nLanduseTotal = 6
+!> The number of Landuse types for each grid 
+!> [should be either, 1 for lumped, or "nLanduseTotal" for spatially distributed]
+nLUperGrid = 6
+!> if ==1 then no additional map needed
+fn_LanduseTypes = "lu.asc"
+!> if > 1 then provede one map of each id, each grid give the areal share of specific id
+fn_arealshare_LU(1) = "lu_0.asc"
+fn_arealshare_LU(2) = "lu_1.asc"
+fn_arealshare_LU(3) = "lu_2.asc"
+fn_arealshare_LU(4) = "lu_3.asc"
+fn_arealshare_LU(5) = "lu_4.asc"
+fn_arealshare_LU(6) = "lu_5.asc"
+!---------------------------------------------------------------------
+!> Total number of soil types
+nSoilTotal = 6
+!> The number of soil types for each grid 
+nSoilperGrid = 6
+!> [should be either, 1 for lumped, or "nSoilTotal" for spatially distributed]
+!> if ==1 then no additional map needed
+fn_SoilTypes = "soil.asc"
+!> if > 1 then provede one map of each id, each grid give the areal share of specific id
+fn_arealshare_soil(1) = "soil_0.asc"
+fn_arealshare_soil(2) = "soil_1.asc"
+fn_arealshare_soil(3) = "soil_2.asc"
+fn_arealshare_soil(4) = "soil_3.asc"
+fn_arealshare_soil(5) = "soil_4.asc"
+fn_arealshare_soil(6) = "soil_5.asc"
+!---------------------------------------------------------------------
+!> No. of soil layers
+!> depth of soil layers as maps [mm], (lowerboundary depth of each layer)
+!> if model_type == 2, these information should be provided in "fn_classProperties"
+nSoilLayers =3
+fn_soil_Depth(1) =  "depth_soilL1.asc"
+fn_soil_Depth(2) = "depth_soilL2.asc"
+fn_soil_Depth(3) = "depth_soilL3.asc"
+!> soil parameters: wilting point and saturation soil mositure for each grid
+!> if below "vn_Satsoilmoist" and "vn_Wiltpnt" are set, these inputs will be over-written by
+!> by the info of the coupled hydro modelling!!											   
+fn_soil_wiltpoint(1) = "wp_1.asc"
+fn_soil_wiltpoint(2) = "wp_2.asc"
+fn_soil_wiltpoint(3) = "wp_3.asc"
+fn_soil_satMoist(1) = "sat_1.asc"
+fn_soil_satMoist(2) = "sat_2.asc"
+fn_soil_satMoist(3) = "sat_3.asc"
+!---------------------------------------------------------------------
+!> Total number of crop rotation types
+nRotationTotal = 5
+!> The number of rotation sequences for each grid
+nRotationperGrid = 5 
+!> [should be either, 1 for lumped, or "nRotationTotal" for spatially distributed]
+!> if ==1 then no additional map needed
+!fn_RotationTypes = "rotation.asc"
+!> if > 1 then provede one map of each id, each grid give the areal share of specific id
+fn_arealshare_rotation(1) = "rt_1.asc"
+fn_arealshare_rotation(2) = "rt_2.asc"
+fn_arealshare_rotation(3) = "rt_3.asc"
+fn_arealshare_rotation(4) = "rt_4.asc"
+fn_arealshare_rotation(5) = "rt_5.asc"
+!---------------------------------------------------------------------
+!> If semi-distributed structure, provide the Class information for each HRU
+fn_classProperties = "GeoClass.txt"
+/
+!******************************************************************************************
+! Observations at gauging stations
+!******************************************************************************************
+&gaugenetwork 
+!---------------------------------------------------------------------
+!> Locations of gauges, numbered as following gauging ids
+fn_gauge_loc = "gauge_ids.asc"
+!---------------------------------------------------------------------
+!> Total number of discharge gauging stations
+nHydroGauges = 3
+!> The observation file for each gauges
+!> discharge observations
+gauge_id(1) = 1
+gauge_id(2) = 2
+gauge_id(3) = 3
+hydro_gauge_filename(1) = "1.txt"
+hydro_gauge_filename(2) = "2.txt"
+hydro_gauge_filename(3) = "3.txt"
+!> stations included in optimization
+hydro_eval_gaugenr = 1
+hydro_eval_gaugeIDs = 3
+!---------------------------------------------------------------------
+!> Total number of WQ gauging stations
+nWQGauges = 3
+!> The observation file for each gauges
+!> water quality observations
+wqm_gauge_id(1) = 1
+wqm_evalgauge_filename(1) = "wq_1.txt"
+wqm_gauge_id(2) = 2  
+wqm_evalgauge_filename(2) = "wq_2.txt"
+wqm_gauge_id(3) = 3  
+wqm_evalgauge_filename(3) = "wq_3.txt" 
+!> stations included in optimization
+wqm_eval_gaugenr = 1
+wqm_eval_gaugeIDs = 3
+!---------------------------------------------------------------------
+!> Total number of inflow sites for both flow and concentration
+!> they should be matched with each other
+nInflowGauges = 5
+!> The observation file for each inflow
+InflowGauge_id(1) = 1001
+InflowisHead(1) = .FALSE.
+InflowGauge_filename(1) = "1001.txt"
+wqm_inflowgauge_filename(1) = "wq_1001.txt"
+InflowGauge_id(2) = 1002
+InflowisHead(2) = .FALSE.
+InflowGauge_filename(2) = "1002.txt"
+wqm_inflowgauge_filename(2) = "wq_1002.txt"
+InflowGauge_id(3) = 1003
+InflowisHead(3) = .FALSE.
+InflowGauge_filename(3) = "1003.txt"
+wqm_inflowgauge_filename(3) = "wq_1003.txt"
+InflowGauge_id(4) = 1004
+InflowisHead(4) = .FALSE.
+InflowGauge_filename(4) = "1004.txt"
+wqm_inflowgauge_filename(4) = "wq_1004.txt"
+InflowGauge_id(5) = 1005
+InflowisHead(5) = .FALSE.
+InflowGauge_filename(5) = "1005.txt"
+wqm_inflowgauge_filename(5) = "wq_1005.txt"
+/
+
+!******************************************************************************************
+! HYDROLOGICAL INPUTS OF STATE VARIABLES AND FLUXES
+!******************************************************************************************
+!----------------------------------------------------------------------
+!----------------------------------------------------------------------
+&processes
+!> vertical----------------------
+!> (1) Interception
+processCase(1) = 1
+!> (2) Snowpack and snowmelt
+processCase(2) = 1
+!> (3) Surface ponding 
+processCase(3) = 0
+!> (4) Multi-layer soil water dynamic
+processCase(4) = 1
+!> (5) Evapotraspiration
+!> 1 - overall ET
+!> 2 - separated evaporation and transpiration
+processCase(5) = 1
+!> lateral-----------------------
+!> (6) Re-infiltration due to lateral surface exchange
+processCase(6) = 0
+!> (7) Surface overland flow generation
+!> potential concentration mixing with top-layer soil water conc: 
+!> THE WEIGHT OF SOIL WATER CONC (ratio =1 fully soil water signal; =0 no mixing considered):
+!> a flexible parameter should be provided, 
+!  either from the coupled model or specified via this interface (see below "SrfOVFmixratio")
+processCase(7) = 1
+!> (8) Subsurface flow generation
+processCase(8) = 1
+!> (9) Baseflow/deepgroundwater flow generation
+processCase(9) = 1
+!> channel in-stream routing-----
+!> (10) Channel routing
+processCase(10) = 1
+!> (11) Impermeable surface storage and direct runoff generation
+processCase(11) = 1
+!----------------------------------------------------------------------
+!> variable names of process related fluxes
+!> only if above related process is activated, otherwise, please assigned "none"
+!> vertical-----------------------------------------------------
+!> above ground inputs
+vn_airTemperature = "airT"
+vn_WS_interception = "WSintercept"
+vn_evapCanopy = "EvapI"
+vn_throughfall = "ThrghRn"
+vn_WS_snowpack = "WSsnow"
+vn_snowmelt = "SnMelt"
+vn_infiltration = "SrfInf"
+vn_WS_ponding = "none"
+!> fluxes and the storage where it is generated from
+!> ET related
+!> unit convert to m/timestep 
+!> e.g., ech2o-iso output unit as m/s, ETfluxUT = 86400 to get m/timstep
+!> e.g., mhm output unit as mm/timestep, ETfluxUT = 0.001 to get m/timestep
+ETfluxUT = 0.001
+!> if processCase(5) == 1, soil evaporation is fixed to 0.0, and use "transp" as the overall ET
+nEvapLayer = 0 
+vn_evap(1) = "none"
+nTranspLayer = 3
+vn_transp(1) = "EvapET01"
+vn_transp(2) = "EvapET02"
+vn_transp(3) = "EvapET03"
+
+!> lateral-----------------------------------------------------
+!> surface flow generation
+vn_surfaceflow = "FastIntflow"
+vn_WS_surfaceflow = "SoilWS01"
+vn_fromWS_surfaceflow = "SoilWS01"
+!>if vn_fromWS_surfaceflow points to first-soil layer, then a soil moisture content threshold should be speicfied,
+!>above which surface flow concentration takes first soil layer water conc, otherwise taking the infiltrated conc.
+!!> see above processCase(7), the surface flow concentration might need to be mixed with
+!> the top-layer soil water conc. Here either provide a unique ratio number, or
+!> if the coupled external hydro model provides this, the corresponding variable name has the top priority.
+!> e.g., =1 take the soil water conc.; =0 not to consider the mixing.
+SrfOVFmixratio =  0.29
+SrfOVFmixratio_vn = "none"																	 
+!> subsurface flow generation
+nSubsurfaceflow = 1
+vn_subsurface_flow(1) = "SlowIntflow"
+vn_WS_subsurface_flow(1) = "WSunsat"
+!> generated from "conceptual" reservoirs, which need to specify the source water storage
+!>i.e., from where to get the up_in input flux and concentration
+vn_fromWS_subsurface_flow(1) = "SoilWS03"
+!> baseflow generation
+vn_baseflow = "Baseflow"
+vn_WS_baseflow = "WSsatbase"
+!> the ratio of retention WS to the one considered for hydrological baseflow calculation
+!> (e.g., for mHM model, 700 was hard coded)
+ratio_RetentionWS = 700
+!> generated from "conceptual" reservoir, which need to specify the source water storage
+!>i.e., from where to get the up_in input flux and concentration
+vn_fromWS_baseflow = "WSunsat"
+!> optionally if processCase(11) = 1 then
+vn_directflow = "Directflow"
+vn_Esealed = "EvapSled"
+vn_WS_directflow = "WSsealed"
+!impermeable land use types
+Sealed_LanduseNrs = 1
+Sealed_Landuse_IDs = 6
+/
+!----------------------------------------------------------------------
+!----------------------------------------------------------------------
+&hydrology_structure
+!> input format specification: 'nc' or 'bin'.
+inputFormat = "nc"
+!> check if model domain is covered by hydrological inputs, default is .FALSE.
+!> NOTE: activate this might take long time reading the inputs
+inputcheck = .FALSE.
+!> if nc, a unique file "inputhydro_filename" should be given containing all variables 
+!> if bin, "inputhydro_filename" is not needed; all variables should be indivudually given, named as variable_name.bin
+inputhydro_filename = "mHM_Fluxes_States_ALL"
+!> flux unit transfer constant [to 'meter']
+!> e.g., if hydro fluxes are in mm/ts, then this should be 0.001
+inputfluxUT = 0.001
+!>-----------------------------
+!> optionally if soil temperature can be provided by hydro inputs
+vn_soilTemperature = "none"
+!---------------------------------------------------------------------
+!> FLUXES OF EACH WATER STORAGE("WS_") FOR EACH GRID (OR SUB-CATCHMENT)
+!> SHOULD BE MATCHING THE STRUCTURE OF YOUR HYDROLOGICAL MODELING
+!---------------------------------------------------------------------
+!> for each water storage
+!> if no flux allowed, use the name of "none"
+!> variable names of vertical fluxes, in the order of "up_in","down_out","up_out","down_in" 
+vn_WS_interception_ver = "Precip","ThrghRn","none","none"
+vn_WS_snowpack_ver = "none","none","none","none"
+vn_WS_ponding_ver = "none","none","none","none"
+!-------------
+!> variable names of soil water storage for each layer
+vn_WSsoil = "SoilWS01","SoilWS02","SoilWS03"
+vn_Satsoilmoist = "none","none","none"
+vn_Wiltpnt = "none","none","none"
+!>for each soil layer, variable names of fluxes, in the order of "up_in","down_out","up_out","down_in"
+!> if no flux allowed, use the name of "none" 
+vn_WSsoil_ver(1,:) = "SrfInf","Inf01","none","none"
+vn_WSsoil_ver(2,:) = "Inf01","Inf02","none","none"
+vn_WSsoil_ver(3,:) = "Inf02","Inf03","none","none"
+!> if reinfiltration allowed
+vn_reinfiltration = "none"
+vn_reinfilsoil(1) = "none"
+vn_reinfilsoil(2) = "none"
+vn_reinfilsoil(3) = "none"
+!>---------------------------------------------------------------------
+!> conceptual storages
+!> if the sotrage is independently dynamic, vertical "up_in" should be specified
+!> otherwise, "up_in" should be "none" so that the conc will be directly replace by the source storage "vn_fromWS_ ##"
+vn_WS_surfaceflow_ver = "none","none","none","none"
+vn_WS_subsurface_flow_ver(1,:) = "Inf03","Percolate","none","none"
+vn_WS_baseflow_ver = "Percolate","none","none","none"
+!> for lateral exchanges, specify fluxes names, in the order of "lateral in", "lateral out"
+vn_WS_surfaceflow_lat = "none","none"
+vn_WS_subsurface_flow_lat(1,:) = "none","none"
+vn_WS_baseflow_lat = "none","none"
+/
+!----------------------------------------------------------------------
+!----------------------------------------------------------------------
+&channel_routing
+!> input format specification: 'nc' or 'bin'.
+inputFormat_rout = "nc"
+inputhydro_rout_filename = "mHM_Fluxes_States_chnALL"
+!> streamflow: [to 'm^3/s'], channel storage: ['m^3'], runoff flux: terrestrial UT applies by default
+input_rout_fluxUT = 1
+!> hydro flux inputs
+vn_channelstorage = "ChanStore"
+vn_upstreaminflow = "none"
+vn_downstreamoutflow = "ChanDwnout"
+!> inflows of local grid/subcatchment generation and the source reservoirs
+vn_srftochan = "none"
+vn_baseftochan = "none"
+nSubsrfToChannel = 1
+vn_sub_srftochan(1) = "none"
+!> optionally, additional inflow can be matched with INFLOW gauges
+!vn_gaugeinflow(1) = "gagueinflow"
+/
+
+!-----------------------------------------------------------------------------
+!> flag for optimization: .TRUE.: optimization
+!>                    or .FALSE.: no optimazition
+!-----------------------------------------------------------------------------
+&optimization
+optimize = .FALSE.
+!> Optimization shall be restarted from ./mo_<opti_method>.restart file, which
+!> should be located next to the mhm executable (mhm)
+optimize_restart = .FALSE.
+!> (0) MCMC                (requires single-objective (SO) function) \n
+!> (1) DDS                 (requires single-objective (SO) function) \n
+!> (2) Simulated Annealing (requires single-objective (SO) function) \n
+!> (3) SCE                 (requires single-objective (SO) function) \n
+!> additional settings for the different methods can be provided below in namelist Optimization
+opti_method = 1
+!> (1)  SO: Q:   1.0 - NSE                                                                                                          \n
+!> (2)  SO: Q:   1.0 - lnNSE                                                                                                        \n
+!> (3)  SO: Q:   1.0 - 0.5*(NSE+lnNSE)                                                                                              \n
+!> (4)  SO: Q:  -1.0 * loglikelihood with trend removed from absolute errors and then lag(1)-autocorrelation removed                \n
+!> (5)  SO: Q:   ((1-NSE)**6+(1-lnNSE)**6)**(1/6)                                                                                   \n
+!> (6)  SO: Q:   SSE                                                                                                                \n
+!> (7)  SO: Q:  -1.0 * loglikelihood with trend removed from absolute errors                                                        \n
+!> (8)  SO: Q:  -1.0 * loglikelihood with trend removed from the relative errors and then lag(1)-autocorrelation removed            \n
+!> (9)  SO: Q:  1.0 - KGE (Kling-Gupta efficiency measure)                                                                          \n
+!> further functions can be implemented in mo_objective_function and mo_mrm_objective_function
+opti_function = 5
+
+!******************************************************************************************
+! SETTINGS FOR OPTIMIZATION
+!******************************************************************************************
+!  -------------------------------------
+!> General: \n
+!  -------------------------------------
+!> number of iteration steps by parameterset
+nIterations = 5000
+!> seed of random number gemerator (default: -9)
+!> if default: seed is obtained from system clock
+seed = -9
+!  -------------------------------------
+!> DDS specific: \n
+!  -------------------------------------
+!> perturbation rate r (default: 0.2)
+dds_r = 0.2
+!  -------------------------------------
+!> SA specific: \n
+!  -------------------------------------
+!> Initial Temperature (default: -9.0)
+!> if default: temperature is determined by algorithm of Ben-Ameur (2004)
+sa_temp = -9.0
+!  -------------------------------------
+!> SCE specific: \n
+!  -------------------------------------
+!> Number of Complexes (default: -9)
+!> if default: ngs = 2
+sce_ngs = 2
+!> Points per Complex (default: -9)
+!> if default: npg = 2n+1
+sce_npg = 13
+!> Points per Sub-Complex (default: -9)
+!> if default: nps = n+1
+sce_nps = 7
+!  -------------------------------------
+!> MCMC specific: \n
+!  -------------------------------------
+!> .true.:  use MCMC for optimisation and estimation of parameter uncertainty
+!> .false.: use MCMC for estimation of parameter uncertainty
+mcmc_opti = .false.
+!> Parameters of error model if mcmc_opti=.false.
+!> e.g. for opti_function=8: two parameters a and b: err = a + b*Q
+mcmc_error_params = 0.01, 0.6
+/

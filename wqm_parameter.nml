@@ -1,0 +1,92 @@
+!PARAMETER LIST of N biogeochemical transforamtions 
+!parameter_name, category index, lowerbound, upperbound, initial value, calibration_flag 
+!category = 1-landuse; 2-soiltype; or any further regionalization
+!ngroups: further grouped into severval groups
+!groupids: specific ids in each subgroup
+!low & upbound: lower and upper bound of parameter ranges in each subground
+!value: the parameter values for each subgroup
+!flag: if included in calibration (1-yes; 0-no)
+
+&parameters
+!> total number of processes that have introduced parameters
+nTotalParam = 7
+!> for each process and parameters
+!>instream_denitrification
+Nparameters(1)%param_name = "instream_denitrification"
+Nparameters(1)%category =  1
+Nparameters(1)%ngroups = 2
+Nparameters(1)%groupids(1,:) =  1,2,3,4,6
+Nparameters(1)%groupids(2,:) = 5
+Nparameters(1)%lowbound = 1.0E-005,1.0E-005
+Nparameters(1)%upbound = 5.0E-002,5.0E-002
+Nparameters(1)%pvalue = 1.0836142808907535E-005,8.0786138778029815E-003
+Nparameters(1)%flag = 1 , 1 
+
+!> autotrophicuptk_rate
+Nparameters(2)%param_name ="autotrophicuptk_rate"
+Nparameters(2)%category = 1
+Nparameters(2)%ngroups = 1
+Nparameters(2)%groupids(1,:) =  1,2,3,4,5,6
+Nparameters(2)%lowbound = 100.00
+Nparameters(2)%upbound = 500.00
+Nparameters(2)%pvalue = 300.00
+Nparameters(2)%flag = 0
+
+!> netprimaryprod_rate
+Nparameters(3)%param_name ="netprimaryprod_rate"
+Nparameters(3)%category =  1
+Nparameters(3)%ngroups = 2
+Nparameters(3)%groupids(1,:) =  1,2,3,4,6
+Nparameters(3)%groupids(2,:) = 5
+Nparameters(3)%lowbound = 0.1000,0.1000 
+Nparameters(3)%upbound = 1.0000,1.0000
+Nparameters(3)%pvalue = 0.10003851604240507,0.10004862977702829
+Nparameters(3)%flag = 0 , 0 
+
+!> denitrification_soil 
+Nparameters(4)%param_name ="denitrification_soil"
+Nparameters(4)%category =  1
+Nparameters(4)%ngroups = 2
+Nparameters(4)%groupids(1,:) =  1,2,3,4,6
+Nparameters(4)%groupids(2,:) = 5
+Nparameters(4)%lowbound = 1.0000000000000000E-004,1.0000000000000000E-004
+Nparameters(4)%upbound = 1.10,1.10
+Nparameters(4)%pvalue = 1.5980101459088732E-002,5.9942529337944445E-002
+Nparameters(4)%flag = 1 , 1 
+
+!> mineralisationN_rate
+Nparameters(5)%param_name ="mineralisationN_rate" 
+Nparameters(5)%category =  1
+Nparameters(5)%ngroups = 2
+Nparameters(5)%groupids(1,:) = 1,2,3,4,6
+Nparameters(5)%groupids(2,:) = 5
+Nparameters(5)%lowbound = 1.0000000000000000E-004,1.0000000000000000E-004 
+Nparameters(5)%upbound =  0.80, 0.80
+Nparameters(5)%pvalue = 0.15191073708990127,0.14321164989149640
+Nparameters(5)%flag = 0 , 0 
+
+!> degradationN_rate
+Nparameters(6)%param_name ="degradationN_rate" 
+Nparameters(6)%category =  1
+Nparameters(6)%ngroups = 2
+Nparameters(6)%groupids(1,:) =  1,2,3,4,6
+Nparameters(6)%groupids(2,:) = 5
+Nparameters(6)%lowbound = 1.0000000000000001E-005,1.0000000000000001E-005 
+Nparameters(6)%upbound = 5.0000000000000002E-005,5.0000000000000002E-005
+Nparameters(6)%pvalue = 4.0974367204717152E-005,1.0136106096669552E-005
+Nparameters(6)%flag = 0 , 0 
+
+
+!> dissolutionN_rate
+Nparameters(7)%param_name ="dissolutionN_rate" 
+Nparameters(7)%category =  1
+Nparameters(7)%ngroups = 2
+Nparameters(7)%groupids(1,:) =  1,2,3,4,6
+Nparameters(7)%groupids(2,:) = 5
+Nparameters(7)%lowbound = 1.0000000000000001E-005,1.0000000000000001E-005 
+Nparameters(7)%upbound =  5.0000000000000002E-005,5.0000000000000002E-005
+Nparameters(7)%pvalue =  1.0048545434829895E-005,1.0016591534350401E-005
+Nparameters(7)%flag = 0 , 0
+/
+
+  

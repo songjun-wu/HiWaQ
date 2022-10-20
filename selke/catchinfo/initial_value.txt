@@ -1,0 +1,9 @@
+CategoryType 1
+nClassification 6
+idclass init_fastN	init_humusN	hnhalf [g/m2]						
+1	0.02	8.033	1.6500
+2	0.30	8.033	0.4013
+3	0.08	8.033	0.4000
+4	0.10	8.033	0.0790
+5	0.20	8.033	0.3380
+6	0.41	8.033	0.1425
